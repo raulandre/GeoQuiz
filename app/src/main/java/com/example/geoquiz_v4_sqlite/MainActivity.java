@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Arrays;
+import java.util.Optional;
 import java.util.UUID;
 
 /*
@@ -107,15 +109,14 @@ public class MainActivity extends AppCompatActivity {
         mBotaoMostra.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (mQuestoesDb == null) return;
+                if (mQuestoesDb == null) mQuestoesDb = new QuestaoDB(getBaseContext());
 
                 if (mTextViewQuestoesArmazenadas == null) {
                     mTextViewQuestoesArmazenadas = (TextView) findViewById(R.id.texto_questoes_a_apresentar);
-                } else {
-                    mTextViewQuestoesArmazenadas.setText("");
                 }
+                mTextViewQuestoesArmazenadas.setText("");
 
-                Cursor cursor = mQuestoesDb.queryQuestao(null, null);
+                Cursor cursor = mQuestoesDb.queryResposta(null, null);
                 if (cursor != null) {
                     if (cursor.getCount() == 0) {
                         mTextViewQuestoesArmazenadas.setText("Nada a apresentar");
@@ -124,10 +125,13 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         cursor.moveToFirst();
                         while (!cursor.isAfterLast()) {
-                            String texto = cursor.getString(cursor.getColumnIndex(QuestoesDbSchema.QuestoesTbl.Cols.TEXTO_QUESTAO));
-                            Log.i("MSGS", texto);
+                            String uuid = cursor.getString(cursor.getColumnIndex(QuestoesDbSchema.RespostasTbl.Cols.UUID));
+                            boolean acertou = cursor.getInt(cursor.getColumnIndex(QuestoesDbSchema.RespostasTbl.Cols.ACERTOU)) != 0;
+                            boolean colou = cursor.getInt(cursor.getColumnIndex(QuestoesDbSchema.RespostasTbl.Cols.COLOU)) != 0;
 
+                            String texto = uuid + " | " + (acertou ? "Acertou" : "Errou") + (colou ? " | Colou" : "");
                             mTextViewQuestoesArmazenadas.append(texto + "\n");
+
                             cursor.moveToNext();
                         }
                     } finally {
@@ -137,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
                     Log.i("MSGS", "cursor nulo!");
             }
         });
+
         mBotaoDeleta = (Button) findViewById(R.id.botao_deleta);
         mBotaoDeleta.setOnClickListener(new View.OnClickListener() {
             @Override

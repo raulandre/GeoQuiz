@@ -63,8 +63,14 @@ public class QuestaoDB {
                 );
                 return cursor;
     }
+
+    public Cursor queryResposta(String clausulaWhere, String[] argsWhere) {
+        Cursor cursor = mDatabase.query(QuestoesDbSchema.RespostasTbl.NOME, null, clausulaWhere, argsWhere, null, null, null);
+        return cursor;
+    }
+
     void removeBanco(){
-        mDatabase.delete(QuestoesDbSchema.QuestoesTbl.NOME, null, null);
+        //mDatabase.delete(QuestoesDbSchema.QuestoesTbl.NOME, null, null);
         mDatabase.delete(QuestoesDbSchema.RespostasTbl.NOME,null, null);
     }
 }
