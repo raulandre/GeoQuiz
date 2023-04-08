@@ -26,10 +26,26 @@ public class QuestaoDB {
         valores.put(QuestoesDbSchema.QuestoesTbl.Cols.QUESTAO_CORRETA, q.isRespostaCorreta());
         return valores;
     }
+
+    private static ContentValues getValoresConteudo(Resposta r){
+        ContentValues valores = new ContentValues();
+        valores.put(QuestoesDbSchema.RespostasTbl.Cols.UUID, r.GetUUID().toString());
+        valores.put(QuestoesDbSchema.RespostasTbl.Cols.ACERTOU, r.GetAcertou());
+        valores.put(QuestoesDbSchema.RespostasTbl.Cols.GABARITO, r.GetGabarito());
+        valores.put(QuestoesDbSchema.RespostasTbl.Cols.COLOU, r.GetColou());
+        return valores;
+    }
+
     public void addQuestao(Questao q){
         ContentValues valores = getValoresConteudo(q);
         mDatabase.insert(QuestoesDbSchema.QuestoesTbl.NOME, null, valores);
     }
+
+    public void addResposta(Resposta r) {
+        ContentValues valores = getValoresConteudo(r);
+        mDatabase.insert(QuestoesDbSchema.RespostasTbl.NOME, null, valores);
+    }
+
     public void updateQuestao(Questao q){
         String uuidString = q.getId().toString();
         ContentValues valores = getValoresConteudo(q);
@@ -48,9 +64,7 @@ public class QuestaoDB {
                 return cursor;
     }
     void removeBanco(){
-        int delete;
-        delete = mDatabase.delete(
-                QuestoesDbSchema.QuestoesTbl.NOME,
-                null, null);
+        mDatabase.delete(QuestoesDbSchema.QuestoesTbl.NOME, null, null);
+        mDatabase.delete(QuestoesDbSchema.RespostasTbl.NOME,null, null);
     }
 }

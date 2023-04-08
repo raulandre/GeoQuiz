@@ -20,12 +20,20 @@ public class QuestoesDBHelper extends SQLiteOpenHelper {
                 QuestoesDbSchema.QuestoesTbl.Cols.UUID+ ","+
                 QuestoesDbSchema.QuestoesTbl.Cols.QUESTAO_CORRETA + ","+
                 QuestoesDbSchema.QuestoesTbl.Cols.TEXTO_QUESTAO+ ")");
+
+        db.execSQL("CREATE TABLE " + QuestoesDbSchema.RespostasTbl.NOME + "(" +
+                "_ID INTEGER PRIMARY KEY AUTOINCREMENT," +
+                QuestoesDbSchema.RespostasTbl.Cols.UUID + "," +
+                QuestoesDbSchema.RespostasTbl.Cols.ACERTOU + "," +
+                QuestoesDbSchema.RespostasTbl.Cols.GABARITO + "," +
+                QuestoesDbSchema.RespostasTbl.Cols.COLOU + ")");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int versaoAntiga, int novaVersao) {
-            // Política de upgrade é simplesmente descartar o conteúdo e começar novamente
-            db.execSQL("DROP TABLE IF EXISTS " + QuestoesDbSchema.QuestoesTbl.NOME);
-            onCreate(db);
+        // Política de upgrade é simplesmente descartar o conteúdo e começar novamente
+        db.execSQL("DROP TABLE IF EXISTS " + QuestoesDbSchema.QuestoesTbl.NOME);
+        db.execSQL("DROP TABLE IF EXISTS " + QuestoesDbSchema.RespostasTbl.NOME);
+        onCreate(db);
     }
 }

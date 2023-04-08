@@ -12,6 +12,8 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.UUID;
+
 /*
   Modelo de projeto para a Atividade 1.
   Será preciso adicionar o cadastro das respostas do usuário ao Quiz, conforme
@@ -180,7 +182,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void verificaResposta(boolean respostaPressionada) {
         boolean respostaCorreta = mBancoDeQuestoes[mIndiceAtual].isRespostaCorreta();
+        UUID uuid = mBancoDeQuestoes[mIndiceAtual].getId();
         int idMensagemResposta = 0;
+
+        if (mQuestoesDb == null) {
+            mQuestoesDb = new QuestaoDB(getBaseContext());
+        }
 
         if (mEhColador) {
             idMensagemResposta = R.string.toast_julgamento;
@@ -190,6 +197,9 @@ public class MainActivity extends AppCompatActivity {
             } else
                 idMensagemResposta = R.string.toast_incorreto;
         }
+
+        Resposta r = new Resposta(uuid, respostaPressionada == respostaCorreta, respostaCorreta, mEhColador);
+        mQuestoesDb.addResposta(r);
         Toast.makeText(this, idMensagemResposta, Toast.LENGTH_SHORT).show();
     }
 
@@ -202,6 +212,7 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int codigoRequisicao, int codigoResultado, Intent dados) {
+        super.onActivityResult(codigoRequisicao, codigoResultado, dados);
         if (codigoResultado != Activity.RESULT_OK) {
             return;
         }
